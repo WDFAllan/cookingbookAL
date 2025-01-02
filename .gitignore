@@ -31,3 +31,23 @@ build/
 
 ### VS Code ###
 .vscode/
+/api/.gitattributes
+/app/.gitattributes
+/domain/.gitattributes
+/infrastructure/.gitattributes
+/.gitattributes
+/.mvn/wrapper/maven-wrapper.properties
+/api/.mvn/wrapper/maven-wrapper.properties
+/app/.mvn/wrapper/maven-wrapper.properties
+/domain/.mvn/wrapper/maven-wrapper.properties
+/infrastructure/.mvn/wrapper/maven-wrapper.properties
+/api/mvnw
+/app/mvnw
+/domain/mvnw
+/infrastructure/mvnw
+/mvnw
+/api/mvnw.cmd
+/app/mvnw.cmd
+/domain/mvnw.cmd
+/infrastructure/mvnw.cmd
+/mvnw.cmd
