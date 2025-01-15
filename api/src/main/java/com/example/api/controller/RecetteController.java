@@ -20,6 +20,9 @@ public class RecetteController {
         return recetteService.getAllRecette();
     }
 
+    @GetMapping(path = "/getByTags")
+    public List<RecetteDto> getRecetteByTag(@RequestParam List<String> tags) {return recetteService.getRecetteByTag(tags);}
+
     @PostMapping
     public void createRecette(@RequestBody RecetteDto recetteDto) {
         recetteService.addRecette(recetteDto);

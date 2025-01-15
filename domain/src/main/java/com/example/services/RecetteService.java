@@ -17,6 +17,10 @@ public class RecetteService {
        return recettePort.findAll();
     }
 
+    public List<RecetteDto> getRecetteByTag(List<String> tags) {
+        return recettePort.findAllByTags(tags);
+    }
+
 
     public void addRecette(RecetteDto recetteDto) {
         recettePort.save(recetteDto);

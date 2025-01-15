@@ -1,9 +1,9 @@
 package com.example.adapters;
 
 import com.example.dtos.RecetteDto;
-import com.example.port.RecettePort;
 import com.example.mapper.RecetteMapper;
 import com.example.model.Recette;
+import com.example.port.RecettePort;
 import com.example.repository.RecetteRepository;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +25,14 @@ public class RecetteAdapter implements RecettePort {
        List<Recette> list = repo.findAll();
 
         return mapper.map(list);
+    }
+
+    @Override
+    public List<RecetteDto> findAllByTags(List<String> tags) {
+        List<Recette> list = repo.findAllByTags(tags, (long) tags.size());
+
+        return mapper.map(list);
+
     }
 
     @Override
