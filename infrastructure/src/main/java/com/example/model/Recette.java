@@ -1,8 +1,6 @@
 package com.example.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,7 +14,7 @@ public class Recette {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    private Float rate;
+    private Double rate;
     private LocalDate date;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -28,7 +26,7 @@ public class Recette {
     @ElementCollection
     private List<String> tags = new ArrayList<>();
 
-    public Recette(Integer id, String name, Float rate, List<String> tags, List<Ingredient> ingredients, List<String> steps) {
+    public Recette(Integer id, String name, Double rate, List<String> tags, List<Ingredient> ingredients, List<String> steps) {
         setId(id);
         setName(name);
         setRate(rate);
@@ -38,7 +36,7 @@ public class Recette {
         setSteps(steps);
     }
 
-    public Recette(String name, Float rate, List<String> tags, List<String> steps, List<Ingredient> ingredients) {
+    public Recette(String name, Double rate, List<String> tags, List<String> steps, List<Ingredient> ingredients) {
         setName(name);
         setRate(rate);
         setDate(LocalDate.now());
@@ -65,11 +63,11 @@ public class Recette {
         this.name = name;
     }
 
-    public Float getRate() {
+    public Double getRate() {
         return rate;
     }
 
-    public void setRate(Float rate) {
+    public void setRate(Double rate) {
         this.rate = rate;
     }
 

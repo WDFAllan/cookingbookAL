@@ -4,6 +4,7 @@ import com.example.dtos.RecetteDto;
 import com.example.port.RecettePort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -22,8 +23,9 @@ public class RecetteService {
     }
 
 
-    public void addRecette(RecetteDto recetteDto) {
-        recettePort.save(recetteDto);
+    public RecetteDto addRecette(RecetteDto recetteDto) {
+        recetteDto.setDate(LocalDate.now());
+        return recettePort.save(recetteDto);
     }
 
 

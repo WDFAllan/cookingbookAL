@@ -6,16 +6,16 @@ import java.util.List;
 
 public class RecetteDto {
 
-    private int id;
+    private Integer id;
     private String name;
-    private float rate;
+    private Double rate;
     private LocalDate date;
     private List<String> tags = new ArrayList<>();
     private List<IngredientDto> ingredients = new ArrayList<>();
     private List<String> steps = new ArrayList<>();
 
 
-    public RecetteDto(String name, float rate, List<String> tags, List<IngredientDto> ingredients, List<String> steps) {
+    public RecetteDto(String name, Double rate, List<String> tags, List<IngredientDto> ingredients, List<String> steps) {
 
         setName(name);
         setRate(rate);
@@ -44,11 +44,11 @@ public class RecetteDto {
         this.name = name;
     }
 
-    public float getRate() {
+    public Double getRate() {
         return rate;
     }
 
-    public void setRate(float rate) {
+    public void setRate(Double rate) {
         this.rate = rate;
     }
 
