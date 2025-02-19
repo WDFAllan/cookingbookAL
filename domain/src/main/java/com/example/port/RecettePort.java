@@ -11,4 +11,6 @@ public interface RecettePort {
     List<RecetteDto> findAllByTags(List<String> tags);
 
     RecetteDto save(RecetteDto recetteDto);
+
+    List<String> getAllTags();
 }

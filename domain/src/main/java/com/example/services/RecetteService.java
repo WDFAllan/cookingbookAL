@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RecetteService {
@@ -22,10 +23,13 @@ public class RecetteService {
         return recettePort.findAllByTags(tags);
     }
 
-
     public RecetteDto addRecette(RecetteDto recetteDto) {
         recetteDto.setDate(LocalDate.now());
         return recettePort.save(recetteDto);
+    }
+
+    public List<String> getAllTags(){
+        return recettePort.getAllTags().stream().sorted().toList();
     }
 
 

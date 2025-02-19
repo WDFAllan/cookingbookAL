@@ -29,5 +29,10 @@ public class RecetteController {
         recetteService.addRecette(recetteDto);
     }
 
+    @GetMapping(path = "/getAllTags")
+    public List<String> getAllTags() {
+        return recetteService.getAllTags();
+    }
+
 
 }

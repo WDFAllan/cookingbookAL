@@ -16,4 +16,8 @@ public interface RecetteRepository extends JpaRepository<Recette, Integer> {
             "GROUP BY r " +
             "HAVING COUNT(t) = :tagCount")
     List<Recette> findAllByTags(List<String> tags, Long tagCount);
+
+    @Query("SELECT DISTINCT r.tags FROM Recette r")
+    List<String> getAllTags();
+
 }

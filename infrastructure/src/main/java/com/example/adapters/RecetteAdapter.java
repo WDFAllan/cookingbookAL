@@ -41,7 +41,11 @@ public class RecetteAdapter implements RecettePort {
         Recette recette = repo.save(recetteTocreate);
 
         return mapper.map(recette);
+    }
 
+    @Override
+    public List<String> getAllTags() {
+        return repo.getAllTags();
     }
 
 
