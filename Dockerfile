@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk
+FROM eclipse-temurin:21-jdk
 LABEL authors="Allan"
 # Répertoire de travail dans le conteneur
 WORKDIR /app

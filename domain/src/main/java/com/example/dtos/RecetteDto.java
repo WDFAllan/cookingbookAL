@@ -1,5 +1,8 @@
 package com.example.dtos;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +10,25 @@ import java.util.List;
 public class RecetteDto {
 
     private Integer id;
+
+    @NotBlank(message = "Le nom de la recette est obligatoire")
     private String name;
+
+    private String imageUrl;
+    private Integer prepTime;
+
+    @Min(value = 0, message = "La note doit être entre 0 et 5")
+    @Max(value = 5, message = "La note doit être entre 0 et 5")
     private Double rate;
+
     private LocalDate date;
     private List<String> tags = new ArrayList<>();
+
+    @NotEmpty(message = "La recette doit contenir au moins un ingrédient")
+    @Valid
     private List<IngredientDto> ingredients = new ArrayList<>();
+
+    @NotEmpty(message = "La recette doit contenir au moins une étape")
     private List<String> steps = new ArrayList<>();
 
 
@@ -28,11 +45,11 @@ public class RecetteDto {
     public RecetteDto() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -78,5 +95,21 @@ public class RecetteDto {
 
     public void setSteps(List<String> steps) {
         this.steps = steps;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Integer getPrepTime() {
+        return prepTime;
+    }
+
+    public void setPrepTime(Integer prepTime) {
+        this.prepTime = prepTime;
     }
 }

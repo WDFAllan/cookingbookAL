@@ -10,19 +10,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 class RecetteServiceTest {
 
     @Mock
@@ -31,33 +31,47 @@ class RecetteServiceTest {
     @InjectMocks
     private RecetteService recetteService;
 
+    // ── getAllRecette ────────────────────────────────────────────────────────
+
     @Test
-    void testGetAllRecettes() {
-
-        //Arrange
-
+    void getAllRecettes_returnsAllRecettes() {
         RecetteDto recette1 = Instancio.create(RecetteDto.class);
         RecetteDto recette2 = Instancio.create(RecetteDto.class);
+        when(recettePort.findAll()).thenReturn(Arrays.asList(recette1, recette2));
 
-
-        List<RecetteDto> recettes = Arrays.asList(recette1, recette2);
-
-        when(recettePort.findAll()).thenReturn(recettes);
-
-        //Act
         List<RecetteDto> result = recetteService.getAllRecette();
 
-        //Assert
-        assertThat(result.size()).isEqualTo(2);
+        assertThat(result).hasSize(2);
         assertThat(result.getFirst().getName()).isEqualTo(recette1.getName());
         assertThat(result.getFirst().getRate()).isEqualTo(recette1.getRate());
+    }
 
+    // ── getRecetteById ───────────────────────────────────────────────────────
+
+    @Test
+    void getRecetteById_existingId_returnsRecette() {
+        RecetteDto recette = Instancio.create(RecetteDto.class);
+        when(recettePort.findById(1)).thenReturn(Optional.of(recette));
+
+        RecetteDto result = recetteService.getRecetteById(1);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo(recette.getName());
     }
 
     @Test
-    void testGetRecetteByTag() {
+    void getRecetteById_unknownId_throwsNoSuchElementException() {
+        when(recettePort.findById(99)).thenReturn(Optional.empty());
 
-        //Arrange
+        assertThatThrownBy(() -> recetteService.getRecetteById(99))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessageContaining("99");
+    }
+
+    // ── getRecetteByTag ──────────────────────────────────────────────────────
+
+    @Test
+    void getRecetteByTag_returnsMatchingRecettes() {
         RecetteDto recette1 = Instancio.create(RecetteDto.class);
         RecetteDto recette2 = Instancio.create(RecetteDto.class);
         RecetteDto recette3 = Instancio.create(RecetteDto.class);
@@ -65,46 +79,72 @@ class RecetteServiceTest {
         recette2.setTags(List.of("tag2", "tag3"));
         recette3.setTags(List.of("tag3", "tag4"));
 
-
         List<RecetteDto> recettes = List.of(recette1, recette2);
 
         when(recettePort.findAllByTags(recettes.getFirst().getTags()))
                 .thenReturn(Collections.singletonList(recette1));
 
         when(recettePort.findAllByTags(List.of("tag2"))).thenReturn(
-            recettes.stream()
-                    .filter(recette -> recette.getTags().contains("tag2"))
-                    .collect(Collectors.toList())
+                recettes.stream()
+                        .filter(r -> r.getTags().contains("tag2"))
+                        .collect(Collectors.toList())
         );
 
-        //Act
+        List<RecetteDto> result1 = recetteService.getRecetteByTag(List.of("tag1", "tag2"));
+        List<RecetteDto> result2 = recetteService.getRecetteByTag(List.of("tag2"));
 
-        List<RecetteDto> recetteList = recetteService.getRecetteByTag(List.of("tag1", "tag2"));
-        List<RecetteDto> recetteCommonTags = recetteService.getRecetteByTag(List.of("tag2"));
-
-        //Assert
-
-        assertThat(recetteList.size()).isEqualTo(1);
-        assertThat(recetteList.getFirst().getName()).isEqualTo(recette1.getName());
-
-        assertThat(recetteCommonTags.size()).isEqualTo(2);
-        assertThat(recetteCommonTags.contains(recette3)).isFalse();
-
-
+        assertThat(result1).hasSize(1);
+        assertThat(result1.getFirst().getName()).isEqualTo(recette1.getName());
+        assertThat(result2).hasSize(2);
+        assertThat(result2).doesNotContain(recette3);
     }
+
+    // ── addRecette ───────────────────────────────────────────────────────────
 
     @Test
-    void testAddRecette() {
+    void addRecette_savesAndReturnsRecette() {
         RecetteDto recette = Instancio.create(RecetteDto.class);
-
         when(recettePort.save(Mockito.any(RecetteDto.class))).thenReturn(recette);
 
-        RecetteDto savedRecette = recetteService.addRecette(recette);
+        RecetteDto saved = recetteService.addRecette(recette);
 
-        assertThat(savedRecette).isNotNull();
-        assertThat(savedRecette.getName()).isEqualTo(recette.getName());
-
+        assertThat(saved).isNotNull();
+        assertThat(saved.getName()).isEqualTo(recette.getName());
+        verify(recettePort, times(1)).save(any(RecetteDto.class));
     }
 
+    // ── updateRecette ────────────────────────────────────────────────────────
 
+    @Test
+    void updateRecette_delegatesToPort() {
+        RecetteDto updated = Instancio.create(RecetteDto.class);
+        when(recettePort.update(eq(1), any(RecetteDto.class))).thenReturn(updated);
+
+        RecetteDto result = recetteService.updateRecette(1, updated);
+
+        assertThat(result.getName()).isEqualTo(updated.getName());
+        verify(recettePort, times(1)).update(eq(1), any(RecetteDto.class));
+    }
+
+    // ── deleteRecette ────────────────────────────────────────────────────────
+
+    @Test
+    void deleteRecette_callsPortDelete() {
+        doNothing().when(recettePort).delete(1);
+
+        recetteService.deleteRecette(1);
+
+        verify(recettePort, times(1)).delete(1);
+    }
+
+    // ── getAllTags ───────────────────────────────────────────────────────────
+
+    @Test
+    void getAllTags_returnsSortedTags() {
+        when(recettePort.getAllTags()).thenReturn(List.of("soupe", "dessert", "apéritif"));
+
+        List<String> tags = recetteService.getAllTags();
+
+        assertThat(tags).containsExactly("apéritif", "dessert", "soupe");
+    }
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 
 @Service
 public class RecetteService {
@@ -19,6 +19,11 @@ public class RecetteService {
        return recettePort.findAll();
     }
 
+    public RecetteDto getRecetteById(Integer id) {
+        return recettePort.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Recette introuvable : " + id));
+    }
+
     public List<RecetteDto> getRecetteByTag(List<String> tags) {
         return recettePort.findAllByTags(tags);
     }
@@ -26,6 +31,14 @@ public class RecetteService {
     public RecetteDto addRecette(RecetteDto recetteDto) {
         recetteDto.setDate(LocalDate.now());
         return recettePort.save(recetteDto);
+    }
+
+    public RecetteDto updateRecette(Integer id, RecetteDto recetteDto) {
+        return recettePort.update(id, recetteDto);
+    }
+
+    public void deleteRecette(Integer id) {
+        recettePort.delete(id);
     }
 
     public List<String> getAllTags(){
