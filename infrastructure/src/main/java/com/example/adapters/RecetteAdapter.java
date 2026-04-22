@@ -58,6 +58,7 @@ public class RecetteAdapter implements RecettePort {
         existing.setSteps(dto.getSteps());
         existing.setImageUrl(dto.getImageUrl());
         existing.setPrepTime(dto.getPrepTime());
+        existing.setServings(dto.getServings());
 
         existing.getIngredients().clear();
         for (IngredientDto ingredientDto : dto.getIngredients()) {

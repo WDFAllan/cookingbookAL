@@ -16,6 +16,7 @@ public class RecetteDto {
 
     private String imageUrl;
     private Integer prepTime;
+    private Integer servings;
 
     @Min(value = 0, message = "La note doit être entre 0 et 5")
     @Max(value = 5, message = "La note doit être entre 0 et 5")
@@ -111,5 +112,13 @@ public class RecetteDto {
 
     public void setPrepTime(Integer prepTime) {
         this.prepTime = prepTime;
+    }
+
+    public Integer getServings() {
+        return servings;
+    }
+
+    public void setServings(Integer servings) {
+        this.servings = servings;
     }
 }

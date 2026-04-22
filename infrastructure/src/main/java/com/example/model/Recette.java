@@ -18,6 +18,7 @@ public class Recette {
     private LocalDate date;
     private String imageUrl;
     private Integer prepTime;
+    private Integer servings;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingredient> ingredients;
@@ -119,6 +120,14 @@ public class Recette {
 
     public void setPrepTime(Integer prepTime) {
         this.prepTime = prepTime;
+    }
+
+    public Integer getServings() {
+        return servings;
+    }
+
+    public void setServings(Integer servings) {
+        this.servings = servings;
     }
 
     @Override
