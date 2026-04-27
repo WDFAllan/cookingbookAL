@@ -16,7 +16,7 @@ public class RecetteService {
     public RecetteService(RecettePort recettePort) { this.recettePort = recettePort; }
 
     public List<RecetteDto> getAllRecette() {
-       return recettePort.findAll();
+        return recettePort.findAll();
     }
 
     public RecetteDto getRecetteById(Integer id) {
@@ -28,22 +28,24 @@ public class RecetteService {
         return recettePort.findAllByTags(tags);
     }
 
-    public RecetteDto addRecette(RecetteDto recetteDto) {
+    public RecetteDto addRecette(RecetteDto recetteDto, Long userId) {
         recetteDto.setDate(LocalDate.now());
-        return recettePort.save(recetteDto);
+        return recettePort.save(recetteDto, userId);
     }
 
-    public RecetteDto updateRecette(Integer id, RecetteDto recetteDto) {
-        return recettePort.update(id, recetteDto);
+    public RecetteDto updateRecette(Integer id, RecetteDto recetteDto, Long userId) {
+        return recettePort.update(id, recetteDto, userId);
     }
 
-    public void deleteRecette(Integer id) {
-        recettePort.delete(id);
+    public void deleteRecette(Integer id, Long userId) {
+        recettePort.delete(id, userId);
     }
 
-    public List<String> getAllTags(){
+    public List<String> getAllTags() {
         return recettePort.getAllTags().stream().sorted().toList();
     }
 
-
+    public List<RecetteDto> getRecettesByUserId(Long userId) {
+        return recettePort.findByUserId(userId);
+    }
 }

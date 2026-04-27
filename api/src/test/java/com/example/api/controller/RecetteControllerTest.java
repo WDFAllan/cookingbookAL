@@ -82,7 +82,7 @@ class RecetteControllerTest {
     @Test
     void createRecette_validBody_returnsCreated() throws Exception {
         RecetteDto dto = recetteValide();
-        when(recetteService.addRecette(any())).thenReturn(dto);
+        when(recetteService.addRecette(any(), any())).thenReturn(dto);
 
         mockMvc.perform(post("/api/v1/recette")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -107,7 +107,7 @@ class RecetteControllerTest {
     @Test
     void updateRecette_validBody_returnsOk() throws Exception {
         RecetteDto dto = recetteValide();
-        when(recetteService.updateRecette(eq(1), any())).thenReturn(dto);
+        when(recetteService.updateRecette(eq(1), any(), any())).thenReturn(dto);
 
         mockMvc.perform(put("/api/v1/recette/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -118,7 +118,7 @@ class RecetteControllerTest {
 
     @Test
     void deleteRecette_returnsNoContent() throws Exception {
-        doNothing().when(recetteService).deleteRecette(1);
+        doNothing().when(recetteService).deleteRecette(eq(1), any());
 
         mockMvc.perform(delete("/api/v1/recette/1"))
                 .andExpect(status().isNoContent());

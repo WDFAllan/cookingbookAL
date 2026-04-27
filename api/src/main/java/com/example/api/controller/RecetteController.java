@@ -5,18 +5,19 @@ import com.example.services.RecetteService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping(path="/api/v1/recette")
+@RequestMapping(path = "/api/v1/recette")
 public class RecetteController {
 
     private final RecetteService recetteService;
 
-    public RecetteController(RecetteService recetteService) {this.recetteService = recetteService;}
+    public RecetteController(RecetteService recetteService) { this.recetteService = recetteService; }
 
     @GetMapping
     public List<RecetteDto> getAllRecettes() {
@@ -40,18 +41,32 @@ public class RecetteController {
 
     @PostMapping
     public ResponseEntity<RecetteDto> createRecette(@Valid @RequestBody RecetteDto recetteDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(recetteService.addRecette(recetteDto));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(recetteService.addRecette(recetteDto, getAuthenticatedUserId()));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RecetteDto> updateRecette(@PathVariable Integer id, @Valid @RequestBody RecetteDto recetteDto) {
-        return ResponseEntity.ok(recetteService.updateRecette(id, recetteDto));
+    public ResponseEntity<RecetteDto> updateRecette(@PathVariable Integer id,
+                                                    @Valid @RequestBody RecetteDto recetteDto) {
+        return ResponseEntity.ok(recetteService.updateRecette(id, recetteDto, getAuthenticatedUserId()));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRecette(@PathVariable Integer id) {
-        recetteService.deleteRecette(id);
+        recetteService.deleteRecette(id, getAuthenticatedUserId());
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/me")
+    public List<RecetteDto> getMyRecettes() {
+        return recetteService.getRecettesByUserId(getAuthenticatedUserId());
+    }
+
+    private Long getAuthenticatedUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            return null;
+        }
+        return (Long) auth.getPrincipal();
+    }
 }

@@ -3,6 +3,7 @@ package com.example.repository;
 import com.example.model.Recette;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,5 +20,8 @@ public interface RecetteRepository extends JpaRepository<Recette, Integer> {
 
     @Query("SELECT DISTINCT r.tags FROM Recette r")
     List<String> getAllTags();
+
+    @Query("SELECT r FROM Recette r WHERE r.userId = :userId")
+    List<Recette> findByUserId(@Param("userId") Long userId);
 
 }

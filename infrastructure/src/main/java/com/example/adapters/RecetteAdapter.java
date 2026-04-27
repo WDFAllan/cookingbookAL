@@ -2,11 +2,13 @@ package com.example.adapters;
 
 import com.example.dtos.IngredientDto;
 import com.example.dtos.RecetteDto;
+import com.example.exceptions.ForbiddenException;
 import com.example.mapper.IngredientMapper;
 import com.example.mapper.RecetteMapper;
 import com.example.model.Recette;
 import com.example.port.RecettePort;
 import com.example.repository.RecetteRepository;
+import com.example.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,38 +21,55 @@ public class RecetteAdapter implements RecettePort {
     private final RecetteRepository repo;
     private final RecetteMapper mapper;
     private final IngredientMapper ingredientMapper;
+    private final UserRepository userRepository;
 
-    public RecetteAdapter(RecetteRepository repo, RecetteMapper mapper, IngredientMapper ingredientMapper) {
+    public RecetteAdapter(RecetteRepository repo, RecetteMapper mapper, IngredientMapper ingredientMapper, UserRepository userRepository) {
         this.repo = repo;
         this.mapper = mapper;
         this.ingredientMapper = ingredientMapper;
+        this.userRepository = userRepository;
+    }
+
+    private RecetteDto withAuthor(RecetteDto dto) {
+        if (dto.getUserId() != null) {
+            userRepository.findById(dto.getUserId()).ifPresent(user -> {
+                String display = (user.getUsername() != null && !user.getUsername().isBlank())
+                        ? user.getUsername()
+                        : user.getEmail();
+                dto.setAuthorEmail(display);
+            });
+        }
+        return dto;
     }
 
     @Override
     public List<RecetteDto> findAll() {
-        return mapper.map(repo.findAll());
+        return mapper.map(repo.findAll()).stream().map(this::withAuthor).toList();
     }
 
     @Override
     public Optional<RecetteDto> findById(Integer id) {
-        return repo.findById(id).map(mapper::map);
+        return repo.findById(id).map(mapper::map).map(this::withAuthor);
     }
 
     @Override
     public List<RecetteDto> findAllByTags(List<String> tags) {
-        return mapper.map(repo.findAllByTags(tags, (long) tags.size()));
+        return mapper.map(repo.findAllByTags(tags, (long) tags.size())).stream().map(this::withAuthor).toList();
     }
 
     @Override
-    public RecetteDto save(RecetteDto recetteDto) {
-        Recette recette = repo.save(mapper.map(recetteDto));
-        return mapper.map(recette);
+    public RecetteDto save(RecetteDto recetteDto, Long userId) {
+        Recette recette = mapper.map(recetteDto);
+        recette.setUserId(userId);
+        return withAuthor(mapper.map(repo.save(recette)));
     }
 
     @Override
-    public RecetteDto update(Integer id, RecetteDto dto) {
+    public RecetteDto update(Integer id, RecetteDto dto, Long userId) {
         Recette existing = repo.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Recette introuvable : " + id));
+
+        checkOwnership(existing.getUserId(), userId);
 
         existing.setName(dto.getName());
         existing.setRate(dto.getRate());
@@ -65,11 +84,14 @@ public class RecetteAdapter implements RecettePort {
             existing.getIngredients().add(ingredientMapper.map(ingredientDto));
         }
 
-        return mapper.map(repo.save(existing));
+        return withAuthor(mapper.map(repo.save(existing)));
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Integer id, Long userId) {
+        Recette existing = repo.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Recette introuvable : " + id));
+        checkOwnership(existing.getUserId(), userId);
         repo.deleteById(id);
     }
 
@@ -78,5 +100,14 @@ public class RecetteAdapter implements RecettePort {
         return repo.getAllTags();
     }
 
+    @Override
+    public List<RecetteDto> findByUserId(Long userId) {
+        return mapper.map(repo.findByUserId(userId)).stream().map(this::withAuthor).toList();
+    }
 
+    private void checkOwnership(Long ownerId, Long requesterId) {
+        if (ownerId != null && !ownerId.equals(requesterId)) {
+            throw new ForbiddenException("Vous n'êtes pas autorisé à modifier cette recette");
+        }
+    }
 }

@@ -20,6 +20,9 @@ public class Recette {
     private Integer prepTime;
     private Integer servings;
 
+    @Column(name = "user_id")
+    private Long userId;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingredient> ingredients;
 
@@ -29,116 +32,38 @@ public class Recette {
     @ElementCollection
     private List<String> tags = new ArrayList<>();
 
-    public Recette(Integer id, String name, Double rate, List<String> tags, List<Ingredient> ingredients, List<String> steps) {
-        setId(id);
-        setName(name);
-        setRate(rate);
-        setDate(LocalDate.now());
-        setTags(tags);
-        setIngredients(ingredients);
-        setSteps(steps);
-    }
-
-    public Recette(String name, Double rate, List<String> tags, List<String> steps, List<Ingredient> ingredients) {
-        setName(name);
-        setRate(rate);
-        setDate(LocalDate.now());
-        setTags(tags);
-        setSteps(steps);
-        setIngredients(ingredients);
-    }
-
     public Recette() {}
 
-    public Integer getId() {
-        return id;
-    }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getName() {
-        return name;
-    }
+    public Double getRate() { return rate; }
+    public void setRate(Double rate) { this.rate = rate; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public LocalDate getDate() { return date; }
+    public void setDate(LocalDate date) { this.date = date; }
 
-    public Double getRate() {
-        return rate;
-    }
+    public List<Ingredient> getIngredients() { return ingredients; }
+    public void setIngredients(List<Ingredient> ingredients) { this.ingredients = ingredients; }
 
-    public void setRate(Double rate) {
-        this.rate = rate;
-    }
+    public List<String> getSteps() { return steps; }
+    public void setSteps(List<String> steps) { this.steps = steps; }
 
-    public LocalDate getDate() {
-        return date;
-    }
+    public List<String> getTags() { return tags; }
+    public void setTags(List<String> tags) { this.tags = tags; }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    public List<Ingredient> getIngredients() {
-        return ingredients;
-    }
+    public Integer getPrepTime() { return prepTime; }
+    public void setPrepTime(Integer prepTime) { this.prepTime = prepTime; }
 
-    public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
-    }
+    public Integer getServings() { return servings; }
+    public void setServings(Integer servings) { this.servings = servings; }
 
-    public List<String> getSteps() {
-        return steps;
-    }
-
-    public void setSteps(List<String> steps) {
-        this.steps = steps;
-    }
-
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public Integer getPrepTime() {
-        return prepTime;
-    }
-
-    public void setPrepTime(Integer prepTime) {
-        this.prepTime = prepTime;
-    }
-
-    public Integer getServings() {
-        return servings;
-    }
-
-    public void setServings(Integer servings) {
-        this.servings = servings;
-    }
-
-    @Override
-    public String toString() {
-        return "Recette{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", rate=" + rate +
-                ", date=" + date +
-                ", tags=" + tags +
-                '}';
-    }
-
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 }

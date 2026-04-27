@@ -13,11 +13,13 @@ public interface RecettePort {
 
     List<RecetteDto> findAllByTags(List<String> tags);
 
-    RecetteDto save(RecetteDto recetteDto);
+    RecetteDto save(RecetteDto recetteDto, Long userId);
 
-    RecetteDto update(Integer id, RecetteDto recetteDto);
+    RecetteDto update(Integer id, RecetteDto recetteDto, Long userId);
 
-    void delete(Integer id);
+    void delete(Integer id, Long userId);
 
     List<String> getAllTags();
+
+    List<RecetteDto> findByUserId(Long userId);
 }

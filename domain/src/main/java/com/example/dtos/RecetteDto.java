@@ -10,6 +10,8 @@ import java.util.List;
 public class RecetteDto {
 
     private Integer id;
+    private Long userId;
+    private String authorEmail;
 
     @NotBlank(message = "Le nom de la recette est obligatoire")
     private String name;
@@ -32,93 +34,41 @@ public class RecetteDto {
     @NotEmpty(message = "La recette doit contenir au moins une étape")
     private List<String> steps = new ArrayList<>();
 
+    public RecetteDto() {}
 
-    public RecetteDto(String name, Double rate, List<String> tags, List<IngredientDto> ingredients, List<String> steps) {
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-        setName(name);
-        setRate(rate);
-        setDate(LocalDate.now());
-        setTags(tags);
-        setIngredients(ingredients);
-        setSteps(steps);
-    }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
-    public RecetteDto() {
-    }
+    public String getAuthorEmail() { return authorEmail; }
+    public void setAuthorEmail(String authorEmail) { this.authorEmail = authorEmail; }
 
-    public Integer getId() {
-        return id;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public Double getRate() { return rate; }
+    public void setRate(Double rate) { this.rate = rate; }
 
-    public String getName() {
-        return name;
-    }
+    public LocalDate getDate() { return date; }
+    public void setDate(LocalDate date) { this.date = date; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public List<String> getTags() { return tags; }
+    public void setTags(List<String> tags) { this.tags = tags; }
 
-    public Double getRate() {
-        return rate;
-    }
+    public List<IngredientDto> getIngredients() { return ingredients; }
+    public void setIngredients(List<IngredientDto> ingredients) { this.ingredients = ingredients; }
 
-    public void setRate(Double rate) {
-        this.rate = rate;
-    }
+    public List<String> getSteps() { return steps; }
+    public void setSteps(List<String> steps) { this.steps = steps; }
 
-    public LocalDate getDate() {
-        return date;
-    }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
+    public Integer getPrepTime() { return prepTime; }
+    public void setPrepTime(Integer prepTime) { this.prepTime = prepTime; }
 
-    public List<String> getTags() {return tags;}
-
-    public void setTags(List<String> tags) {this.tags = tags;}
-
-    public List<IngredientDto> getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(List<IngredientDto> ingredients) {
-        this.ingredients = ingredients;
-    }
-
-    public List<String> getSteps() {
-        return steps;
-    }
-
-    public void setSteps(List<String> steps) {
-        this.steps = steps;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public Integer getPrepTime() {
-        return prepTime;
-    }
-
-    public void setPrepTime(Integer prepTime) {
-        this.prepTime = prepTime;
-    }
-
-    public Integer getServings() {
-        return servings;
-    }
-
-    public void setServings(Integer servings) {
-        this.servings = servings;
-    }
+    public Integer getServings() { return servings; }
+    public void setServings(Integer servings) { this.servings = servings; }
 }

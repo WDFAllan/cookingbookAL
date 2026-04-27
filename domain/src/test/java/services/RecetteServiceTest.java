@@ -104,13 +104,13 @@ class RecetteServiceTest {
     @Test
     void addRecette_savesAndReturnsRecette() {
         RecetteDto recette = Instancio.create(RecetteDto.class);
-        when(recettePort.save(Mockito.any(RecetteDto.class))).thenReturn(recette);
+        when(recettePort.save(Mockito.any(RecetteDto.class), isNull())).thenReturn(recette);
 
-        RecetteDto saved = recetteService.addRecette(recette);
+        RecetteDto saved = recetteService.addRecette(recette, null);
 
         assertThat(saved).isNotNull();
         assertThat(saved.getName()).isEqualTo(recette.getName());
-        verify(recettePort, times(1)).save(any(RecetteDto.class));
+        verify(recettePort, times(1)).save(any(RecetteDto.class), isNull());
     }
 
     // ── updateRecette ────────────────────────────────────────────────────────
@@ -118,23 +118,23 @@ class RecetteServiceTest {
     @Test
     void updateRecette_delegatesToPort() {
         RecetteDto updated = Instancio.create(RecetteDto.class);
-        when(recettePort.update(eq(1), any(RecetteDto.class))).thenReturn(updated);
+        when(recettePort.update(eq(1), any(RecetteDto.class), isNull())).thenReturn(updated);
 
-        RecetteDto result = recetteService.updateRecette(1, updated);
+        RecetteDto result = recetteService.updateRecette(1, updated, null);
 
         assertThat(result.getName()).isEqualTo(updated.getName());
-        verify(recettePort, times(1)).update(eq(1), any(RecetteDto.class));
+        verify(recettePort, times(1)).update(eq(1), any(RecetteDto.class), isNull());
     }
 
     // ── deleteRecette ────────────────────────────────────────────────────────
 
     @Test
     void deleteRecette_callsPortDelete() {
-        doNothing().when(recettePort).delete(1);
+        doNothing().when(recettePort).delete(eq(1), isNull());
 
-        recetteService.deleteRecette(1);
+        recetteService.deleteRecette(1, null);
 
-        verify(recettePort, times(1)).delete(1);
+        verify(recettePort, times(1)).delete(eq(1), isNull());
     }
 
     // ── getAllTags ───────────────────────────────────────────────────────────

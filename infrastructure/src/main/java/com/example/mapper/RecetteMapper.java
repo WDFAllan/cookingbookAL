@@ -10,13 +10,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface RecetteMapper {
 
-//    @Mapping(target = "name",source = "")
     RecetteDto map(Recette recette);
 
     List<RecetteDto> map(List<Recette> recettes);
 
-//    @InheritInverseConfiguration
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "userId", ignore = true)
     Recette map(RecetteDto recetteDto);
-
 }
