@@ -14,18 +14,19 @@ import com.example.api.handler.GlobalExceptionHandler;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.example.dtos.PageResult;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(RecetteController.class)
-@Import(GlobalExceptionHandler.class)
+@Import({GlobalExceptionHandler.class, com.example.api.config.TestSecurityConfig.class})
 class RecetteControllerTest {
 
     @Autowired
@@ -51,13 +52,15 @@ class RecetteControllerTest {
     }
 
     @Test
-    void getAllRecettes_returnsOkWithList() throws Exception {
-        when(recetteService.getAllRecette()).thenReturn(List.of(recetteValide()));
+    void getAllRecettes_returnsOkWithPageResult() throws Exception {
+        PageResult<RecetteDto> page = new PageResult<>(List.of(recetteValide()), 0, 1, 1L);
+        when(recetteService.getAllRecettePaged(anyInt(), anyInt(), any(), any())).thenReturn(page);
 
         mockMvc.perform(get("/api/v1/recette"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name").value("Tarte aux pommes"));
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].name").value("Tarte aux pommes"))
+                .andExpect(jsonPath("$.totalPages").value(1));
     }
 
     @Test

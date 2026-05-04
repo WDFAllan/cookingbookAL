@@ -1,6 +1,7 @@
 package com.example.adapters;
 
 import com.example.dtos.IngredientDto;
+import com.example.dtos.PageResult;
 import com.example.dtos.RecetteDto;
 import com.example.exceptions.ForbiddenException;
 import com.example.mapper.IngredientMapper;
@@ -9,6 +10,9 @@ import com.example.model.Recette;
 import com.example.port.RecettePort;
 import com.example.repository.RecetteRepository;
 import com.example.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -45,6 +49,22 @@ public class RecetteAdapter implements RecettePort {
     @Override
     public List<RecetteDto> findAll() {
         return mapper.map(repo.findAll()).stream().map(this::withAuthor).toList();
+    }
+
+    @Override
+    public PageResult<RecetteDto> findAllPaged(int page, int size, String name, String sort) {
+        Sort ordering = "rate".equals(sort)
+                ? Sort.by("rate").descending()
+                : Sort.by("date").descending();
+        PageRequest pageable = PageRequest.of(page, size, ordering);
+        Page<Recette> result = (name == null || name.isBlank())
+                ? repo.findAll(pageable)
+                : repo.findByNameContaining(name, pageable);
+        List<RecetteDto> content = result.getContent().stream()
+                .map(mapper::map)
+                .map(this::withAuthor)
+                .toList();
+        return new PageResult<>(content, page, result.getTotalPages(), result.getTotalElements());
     }
 
     @Override

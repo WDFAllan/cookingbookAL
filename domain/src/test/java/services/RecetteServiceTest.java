@@ -1,5 +1,6 @@
 package services;
 
+import com.example.dtos.PageResult;
 import com.example.dtos.RecetteDto;
 import com.example.port.RecettePort;
 import com.example.services.RecetteService;
@@ -32,6 +33,20 @@ class RecetteServiceTest {
     private RecetteService recetteService;
 
     // ── getAllRecette ────────────────────────────────────────────────────────
+
+    @Test
+    void getAllRecettePaged_returnsPageResult() {
+        RecetteDto recette = Instancio.create(RecetteDto.class);
+        PageResult<RecetteDto> expected = new PageResult<>(List.of(recette), 0, 1, 1L);
+        when(recettePort.findAllPaged(0, 9, "", "date")).thenReturn(expected);
+
+        PageResult<RecetteDto> result = recetteService.getAllRecettePaged(0, 9, "", "date");
+
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getTotalElements()).isEqualTo(1L);
+        verify(recettePort).findAllPaged(0, 9, "", "date");
+    }
 
     @Test
     void getAllRecettes_returnsAllRecettes() {

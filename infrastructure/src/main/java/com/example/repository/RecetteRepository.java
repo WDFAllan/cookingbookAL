@@ -1,6 +1,8 @@
 package com.example.repository;
 
 import com.example.model.Recette;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,5 +25,8 @@ public interface RecetteRepository extends JpaRepository<Recette, Integer> {
 
     @Query("SELECT r FROM Recette r WHERE r.userId = :userId")
     List<Recette> findByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT r FROM Recette r WHERE LOWER(r.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    Page<Recette> findByNameContaining(@Param("name") String name, Pageable pageable);
 
 }

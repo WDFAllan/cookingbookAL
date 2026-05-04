@@ -1,5 +1,6 @@
 package com.example.api.controller;
 
+import com.example.dtos.PageResult;
 import com.example.dtos.RecetteDto;
 import com.example.services.RecetteService;
 import jakarta.validation.Valid;
@@ -20,8 +21,12 @@ public class RecetteController {
     public RecetteController(RecetteService recetteService) { this.recetteService = recetteService; }
 
     @GetMapping
-    public List<RecetteDto> getAllRecettes() {
-        return recetteService.getAllRecette();
+    public PageResult<RecetteDto> getAllRecettes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "9") int size,
+            @RequestParam(required = false, defaultValue = "") String name,
+            @RequestParam(defaultValue = "date") String sort) {
+        return recetteService.getAllRecettePaged(page, size, name, sort);
     }
 
     @GetMapping("/{id}")

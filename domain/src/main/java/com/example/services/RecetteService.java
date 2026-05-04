@@ -1,5 +1,6 @@
 package com.example.services;
 
+import com.example.dtos.PageResult;
 import com.example.dtos.RecetteDto;
 import com.example.port.RecettePort;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,10 @@ public class RecetteService {
 
     public List<RecetteDto> getAllRecette() {
         return recettePort.findAll();
+    }
+
+    public PageResult<RecetteDto> getAllRecettePaged(int page, int size, String name, String sort) {
+        return recettePort.findAllPaged(page, size, name, sort);
     }
 
     public RecetteDto getRecetteById(Integer id) {

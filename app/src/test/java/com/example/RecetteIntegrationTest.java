@@ -115,12 +115,14 @@ class RecetteIntegrationTest {
      * Après avoir créé une recette, la liste ne doit pas être vide.
      */
     @Test
-    void getAllRecettes_retourneListeNonVide() throws Exception {
+    void getAllRecettes_retournePageResultNonVide() throws Exception {
         createRecipe("Quiche lorraine");
 
         mockMvc.perform(get(BASE_URL))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", not(empty())));
+                .andExpect(jsonPath("$.content", not(empty())))
+                .andExpect(jsonPath("$.totalPages").isNumber())
+                .andExpect(jsonPath("$.totalElements").isNumber());
     }
 
     /**
