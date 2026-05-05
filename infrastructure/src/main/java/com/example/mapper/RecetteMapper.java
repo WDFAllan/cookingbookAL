@@ -4,10 +4,11 @@ import com.example.dtos.RecetteDto;
 import com.example.model.Recette;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface RecetteMapper {
 
     RecetteDto map(Recette recette);
